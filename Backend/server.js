@@ -57,6 +57,7 @@ convertCSV = async() => {
 };
 
 fetch = async() =>{
+  console.log("[0] Nightmare is running... \n[0.1] Mining hts.usitc.gov ...")
     nightmare.on("download", function(state, downloadItem) {
         if (state == "started") {
           nightmare.emit("download", filepath, downloadItem);
@@ -93,7 +94,7 @@ fetch = async() =>{
     return true
   }
 // record.save();
-console.log("[0] Nightmare is running... \n [0.1] Mining hts.usitc.gov ...")
-fetch()
+
+// fetch()
 
 
