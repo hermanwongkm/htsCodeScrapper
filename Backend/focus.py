@@ -25,6 +25,7 @@ def loadTable(filepath):
     return table
 
 def modify(table):
+    print("[2] Modifying Table ...")
     parent = ""
     for i in range(1,len(table)):
         # 1.For isolating focus keywords
@@ -39,27 +40,28 @@ def modify(table):
 # parents=True will also create any necessary parent directories, 
 # and exist_ok=True won't raise an error if the directory already exists, don't have to explicitly check that separately.
 
-def dfToCSV(table):
+def dfToRecords(table):
     df = pd.DataFrame(table)
-    output_file = 'modified.csv'
-    output_dir = Path('database/csv/modified')
+    output_csv = 'modified.csv'
+    output_json = 'modified.json'
+    output_dir = Path('database/record/modified')
     output_dir.mkdir(parents=True, exist_ok=True)
-    df.to_csv(output_dir / output_file)
-    return "[2] Sucessfully Modified the mined csv."
+    df.to_csv(output_dir / output_csv)
+    df.to_json(output_dir / output_json,orient='records')
+    return "[2.1] Sucessfully saved the modified CSV and JSON."
 
-def dfToJSON(table):
-    df = pd.DataFrame(table)
-    output_file = 'modified.json'
-    output_dir = Path('database/csv/modified')
-    output_dir.mkdir(parents=True, exist_ok=True)
-    df.to_json(output_dir / output_file,orient='records')
-    return "[2] Sucessfully Modified the mined csv."
+# def dfToJSON(table):
+#     df = pd.DataFrame(table)
+#     output_file = 'modified.json'
+#     output_dir = Path('database/record/modified')
+#     output_dir.mkdir(parents=True, exist_ok=True)
+#     df.to_json(output_dir / output_file,orient='records')
+#     return "[2] Sucessfully saved JSON."
 
 
 table = loadTable(filepath)
 modifiedTable = modify(table)
-# print(dfToCSV(modifiedTable))
-print(dfToJSON(modifiedTable))
+print(dfToRecords(modifiedTable))
 
 
 sys.stdout.flush()

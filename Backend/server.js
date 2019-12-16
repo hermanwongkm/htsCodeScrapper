@@ -32,8 +32,6 @@ const htsSchema = new mongoose.Schema({
     type: String
   }]
 });
-// Schema object
-const Record = mongoose.model('hts_codes', htsSchema);
 
 var example = {
   '0': '0105.94.00.00',
@@ -47,24 +45,24 @@ var example = {
   '8': '',
   '9': "['Raven']",
 }
+
+// Schema object
+const Record = mongoose.model('hts_codes', htsSchema);
 let record = new Record(example);
+
 
 /**
  * getUpdated calls for web automation tool to download the latest csv file.
  */
-const filepath= "./database/csv/mined/file.csv"
+const filepath= "./database/record/mined/file.csv" // for python
 
 convertCSV = async() => {
-  data = await csvtojson().fromFile("./database/csv/modified/modified.csv")
+  data = await csvtojson().fromFile("./database/record/modified/modified.csv")
   return data;
 };
 
 parseJSON =  async() => {
-  // data = await fs.readFileSync('./database/csv/modified/modified.json', 'utf8')
-  var data = require('./database/csv/modified/modified.json');
-  // out = JSON.parse("["+data.toString().substring(1,data.toString().length-1)+"]");
-  // console.log(out)
-  // const data = await JSON.parse(fs.readFileSync('./database/csv/modified/modified.json', 'utf8'));
+  var data = await require('./database/record/modified/modified.json');
   return data
 }
 const fetch = async() =>{
@@ -91,16 +89,15 @@ const fetch = async() =>{
              const pythonProcess = spawn('python3',["./focus.py", filepath]);
             pythonProcess.stdout.on('data', async(data) => {
             console.log(String(data));
-            // converted = await JSON.parse(convertCSV());
             converted = await parseJSON();
             Record.collection.insertMany(converted, {safe:true}, function (err, docs) {
               if (err){ 
                   return console.error(err);
               } else {
-                console.log(docs.insertedCount+" documents inserted to Collection");
+                console.log("[4] MongoDB database updated, "+docs.insertedCount+" documents inserted to Collection ...");
               }
             });
-            console.log("[3] Successfully convert .csv to JSON");
+            console.log("[3] Successfully handled Python Record Manipulation ...");
             });
            });
     return true
@@ -115,12 +112,6 @@ console.log(`User: ${server.fetch()}`);
 
 
 fetch()
-
-// 
-// regex()=> {
-
-// }
-
 
 
 // const query = Record.find(); // 'query is an instance of 'query'
