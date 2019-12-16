@@ -60,11 +60,12 @@ convertCSV = async() => {
 };
 
 parseJSON =  async() => {
-  data = await fs.readFileSync('./database/csv/modified/modified.json', 'utf8')
+  // data = await fs.readFileSync('./database/csv/modified/modified.json', 'utf8')
+  var data = require('./database/csv/modified/modified.json');
   // out = JSON.parse("["+data.toString().substring(1,data.toString().length-1)+"]");
   // console.log(out)
   // const data = await JSON.parse(fs.readFileSync('./database/csv/modified/modified.json', 'utf8'));
-  return JSON.parse(data);
+  return data
 }
 const fetch = async() =>{
   console.log("[0] Nightmare is running... \n[0.1] Mining hts.usitc.gov ...")
@@ -92,7 +93,7 @@ const fetch = async() =>{
             console.log(String(data));
             // converted = await JSON.parse(convertCSV());
             converted = await parseJSON();
-            Record.collection.insertMany(converted, function (err, docs) {
+            Record.collection.insertMany(converted, {safe:true}, function (err, docs) {
               if (err){ 
                   return console.error(err);
               } else {
@@ -113,7 +114,7 @@ console.log(`User: ${server.fetch()}`);
 */ 
 
 
-// fetch()
+fetch()
 
 // 
 // regex()=> {
@@ -128,16 +129,4 @@ console.log(`User: ${server.fetch()}`);
 // }); // 
 
 // query.findOne({'des'})
-
-
-
-converted =  parseJSON();
-Record.collection.insertMany(converted, function (err, docs) {
-  if (err){ 
-      return console.error(err);
-  } else {
-    console.log(docs.insertedCount+" documents inserted to Collection");
-  }
-});
-
 
