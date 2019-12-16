@@ -52,7 +52,7 @@ def dfToJSON(table):
     output_file = 'modified.json'
     output_dir = Path('database/csv/modified')
     output_dir.mkdir(parents=True, exist_ok=True)
-    df.to_json(output_dir / output_file,orient='index')
+    df.to_json(output_dir / output_file,orient='records')
     return "[2] Sucessfully Modified the mined csv."
 
 
