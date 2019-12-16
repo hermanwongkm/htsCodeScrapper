@@ -2,6 +2,7 @@
 const Nightmare = require("nightmare");
 require("nightmare-download-manager")(Nightmare);
 const nightmare = Nightmare({ show: true });
+const fs = require('fs');
 
 // Spawn is for python script for data preprocessing
 const spawn = require("child_process").spawn;
@@ -27,7 +28,9 @@ const htsSchema = new mongoose.Schema({
   6: String,
   7:String,
   8: String,
-  9:String,
+  9:[{
+    type: String
+  }]
 });
 // Schema object
 const Record = mongoose.model('hts_codes', htsSchema);
@@ -56,7 +59,14 @@ convertCSV = async() => {
   return data;
 };
 
-fetch = async() =>{
+parseJSON =  async() => {
+  data = await fs.readFileSync('./database/csv/modified/modified.json', 'utf8')
+  // out = JSON.parse("["+data.toString().substring(1,data.toString().length-1)+"]");
+  // console.log(out)
+  // const data = await JSON.parse(fs.readFileSync('./database/csv/modified/modified.json', 'utf8'));
+  return JSON.parse(data);
+}
+const fetch = async() =>{
   console.log("[0] Nightmare is running... \n[0.1] Mining hts.usitc.gov ...")
     nightmare.on("download", function(state, downloadItem) {
         if (state == "started") {
@@ -80,7 +90,8 @@ fetch = async() =>{
              const pythonProcess = spawn('python3',["./focus.py", filepath]);
             pythonProcess.stdout.on('data', async(data) => {
             console.log(String(data));
-            converted = await convertCSV();
+            // converted = await JSON.parse(convertCSV());
+            converted = await parseJSON();
             Record.collection.insertMany(converted, function (err, docs) {
               if (err){ 
                   return console.error(err);
@@ -93,8 +104,40 @@ fetch = async() =>{
            });
     return true
   }
-// record.save();
+
+module.exports.fetch = fetch;
+/*
+Usage
+const server = require('./server');
+console.log(`User: ${server.fetch()}`);
+*/ 
+
 
 // fetch()
+
+// 
+// regex()=> {
+
+// }
+
+
+
+// const query = Record.find(); // 'query is an instance of 'query'
+// query.setOptions({
+//   lean:true, //lean is great for high performance, read only cases.
+// }); // 
+
+// query.findOne({'des'})
+
+
+
+converted =  parseJSON();
+Record.collection.insertMany(converted, function (err, docs) {
+  if (err){ 
+      return console.error(err);
+  } else {
+    console.log(docs.insertedCount+" documents inserted to Collection");
+  }
+});
 
 

@@ -28,8 +28,8 @@ def modify(table):
     parent = ""
     for i in range(1,len(table)):
         # 1.For isolating focus keywords
-        word_tokens = word_tokenize(table[i][2]) 
-        table[i][-1] = [w for w in word_tokens if not w in stop_words]
+        word_tokens = word_tokenize(table[i][2])
+        table[i][-1] = [w.lower() for w in word_tokens if not w in stop_words]
         # 2.For filling in the parent hts code for empty children
         if(table[i][0]==""):
             table[i][0] = parent
@@ -47,10 +47,19 @@ def dfToCSV(table):
     df.to_csv(output_dir / output_file)
     return "[2] Sucessfully Modified the mined csv."
 
+def dfToJSON(table):
+    df = pd.DataFrame(table)
+    output_file = 'modified.json'
+    output_dir = Path('database/csv/modified')
+    output_dir.mkdir(parents=True, exist_ok=True)
+    df.to_json(output_dir / output_file,orient='index')
+    return "[2] Sucessfully Modified the mined csv."
 
 
 table = loadTable(filepath)
 modifiedTable = modify(table)
-print(dfToCSV(modifiedTable))
+# print(dfToCSV(modifiedTable))
+print(dfToJSON(modifiedTable))
+
 
 sys.stdout.flush()
