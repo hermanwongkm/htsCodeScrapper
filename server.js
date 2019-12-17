@@ -6,7 +6,6 @@ const fs = require("fs");
 
 // Spawn is for python script for data preprocessing
 const spawn = require("child_process").spawn;
-const csvtojson = require("csvtojson");
 
 // MongoDB requirements and variables.
 var mongoose = require("mongoose");
@@ -16,11 +15,6 @@ var models = require("./schemas/record.js"); //import records.js
  * getUpdated calls for web automation tool to download the latest csv file.
  */
 const filepath = "./database/record/mined/file.csv"; // for python
-
-convertCSV = async () => {
-  data = await csvtojson().fromFile("./database/record/modified/modified.csv");
-  return data;
-};
 
 parseJSON = async () => {
   var data = await require("./database/record/modified/modified.json");
