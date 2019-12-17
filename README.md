@@ -1,3 +1,1 @@
-# htsCodeScrapper
-Scrapper for hts code  
-Backing up portion of code
+db.hts_codes.drop()
