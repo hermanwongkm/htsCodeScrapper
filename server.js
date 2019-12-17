@@ -1,11 +1,7 @@
 // Nightmare for data mining automation
 const Nightmare = require("nightmare");
 require("nightmare-download-manager")(Nightmare);
-const nightmare = Nightmare({ show: true });
 const fs = require("fs");
-
-// Spawn is for python script for data preprocessing
-const spawn = require("child_process").spawn;
 
 // MongoDB requirements and variables.
 var mongoose = require("mongoose");
@@ -20,7 +16,12 @@ parseJSON = async () => {
   var data = await require("./database/record/modified/modified.json");
   return data;
 };
-const fetch = async () => {
+fetch = async () => {
+  mongoose.connection.db.dropDatabase();
+  // Spawn is for python script for data preprocessing
+  let nightmare = Nightmare({ show: true });
+  let spawn = require("child_process").spawn;
+
   console.log("[0] Nightmare is running... \n[0.1] Mining hts.usitc.gov ...");
   nightmare.on("download", function(state, downloadItem) {
     if (state == "started") {
@@ -38,6 +39,7 @@ const fetch = async () => {
     .click("input#Submit.btn.btn-primary")
     .wait(10000)
     .waitDownloadsComplete()
+    .end(() => "some value")
     .then(async () => {
       // now run python script
       console.log("[1] Successfully mined hts.usitc.gov/export");

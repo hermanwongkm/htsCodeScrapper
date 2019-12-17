@@ -16,8 +16,8 @@ nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet = True)
   
 
-# filepath = sys.argv[1] # for use with nodeJS
-filepath= "./database/csv/mined/file.csv" 
+filepath = sys.argv[1] # for use with nodeJS
+# filepath= "./database/csv/mined/file.csv" 
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
 stop_words.extend(custom_stop_words)
