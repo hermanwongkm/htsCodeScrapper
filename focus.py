@@ -67,7 +67,42 @@ def dfToRecords(table):
     df.to_csv(output_dir / output_csv)
     df.to_json(output_dir / output_json, orient='records')
     return "[2.1] Sucessfully saved the modified CSV and JSON."
+
+
+def parentChildRelation(table):
+    first_group = False
+    row_num = 0
     
+    for row in table:
+        row_num += 1
+        skip_first = True
+        if skip_first == True:
+            skip_first = False
+            continue
+        if skip_first == False:# Make sure row us data
+            indent = int(row[1])
+            print(row[0])
+            if indent == 0:
+                ancestors = [row]  #creates a ancestor array
+                row[-3] = [] #initialised my child column
+            else:
+                parent_indent = indent - 1
+                while parent_indent >= 0:
+                    try:
+                        ancestors[parent_indent][-3].append(row)
+                        break
+                    except IndexError:
+                        parent_indent -= 1  # search one more level up
+                        
+                ancestors = ancestors[:indent]  # remove the previous ancestor at the same indent
+                ancestors.append(row)
+                row[-3] = []
+    with open('table.json', 'w') as fout:
+        print(json.dumps(table), file=fout)
+    return table
+
+
+
 table = loadTable(filepath)
 modifiedTable = modify(table)
 print(dfToRecords(modifiedTable))
