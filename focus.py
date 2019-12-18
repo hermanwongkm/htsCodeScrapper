@@ -1,5 +1,7 @@
 import sys
 import csv
+import json
+import pprint
 import numpy
 import nltk
 from nltk.corpus import stopwords 
@@ -16,8 +18,8 @@ nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet = True)
   
 
-filepath = sys.argv[1] # for use with nodeJS
-# filepath= "./database/csv/mined/file.csv" 
+# filepath = sys.argv[1] # for use with nodeJS
+filepath= "./database/csv/mined/file.csv" 
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
 stop_words.extend(custom_stop_words)
@@ -25,8 +27,10 @@ stop_words.extend(custom_stop_words)
 def loadTable(filepath):
     with open(filepath, newline='') as csvfile:
         table = list(csv.reader(csvfile))
-    table = [x + [""] for x in table] # expand by one column
+    table = [x + [""] + [""] + [""] for x in table] # expand by one column
     table[0][-1] = "Keywords" #add keyword header
+    table[0][-2] = "Parent" #add keyword header
+    table[0][-3] = "Children" #add keyword header
     # table[0][0] = "HTS Number" #fix corrupted column field
     return table
 
@@ -72,16 +76,16 @@ def dfToRecords(table):
 def parentChildRelation(table):
     first_group = False
     row_num = 0
+    print("Inside of parentChildRelation")
     
+    skip_first = True
     for row in table:
         row_num += 1
-        skip_first = True
         if skip_first == True:
             skip_first = False
             continue
         if skip_first == False:# Make sure row us data
             indent = int(row[1])
-            print(row[0])
             if indent == 0:
                 ancestors = [row]  #creates a ancestor array
                 row[-3] = [] #initialised my child column
@@ -89,7 +93,7 @@ def parentChildRelation(table):
                 parent_indent = indent - 1
                 while parent_indent >= 0:
                     try:
-                        ancestors[parent_indent][-3].append(row)
+                        ancestors[parent_indent][-3].append((row))
                         break
                     except IndexError:
                         parent_indent -= 1  # search one more level up
@@ -97,15 +101,18 @@ def parentChildRelation(table):
                 ancestors = ancestors[:indent]  # remove the previous ancestor at the same indent
                 ancestors.append(row)
                 row[-3] = []
-    with open('table.json', 'w') as fout:
+
+    with open('table1.json', 'w') as fout:
         print(json.dumps(table), file=fout)
+    print(table[1:5])
     return table
-
-
 
 table = loadTable(filepath)
 modifiedTable = modify(table)
-print(dfToRecords(modifiedTable))
+childTable = parentChildRelation(modifiedTable)
+dfToRecords(childTable)
+
+# print(dfToRecords(modifiedTable))
 
 
 sys.stdout.flush()
