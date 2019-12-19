@@ -18,8 +18,8 @@ nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet = True)
 
 
-filepath = sys.argv[1] # for use with nodeJS
-# filepath= "./database/record/mined/file.csv" 
+# filepath = sys.argv[1] # for use with nodeJS
+filepath= "./database/record/mined/file.csv" 
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
 stop_words.extend(custom_stop_words)
@@ -27,10 +27,11 @@ stop_words.extend(custom_stop_words)
 def loadTable(filepath):
     with open(filepath, newline='') as csvfile:
         table = list(csv.reader(csvfile))
-    table = [x + [""] + [""] + [""] for x in table] # expand by one column
+    table = [x + [""] + [""] + [""] + [""] for x in table] # expand by one column
     table[0][-1] = "Keywords" #add keyword header
     table[0][-2] = "Parent" #add keyword header
     table[0][-3] = "Children" #add keyword header
+    table[0][-4] = "key" #added unique identifier for ant design
     # table[0][0] = "HTS Number" #fix corrupted column field
     return table
 
@@ -40,10 +41,13 @@ def modify(table):
     # 1.0 Populate the parent column
     ancestor = ""
     for i in range(1,len(table)):
+        table[i][-4] = i #added unique identifier for ant design
+
         if table[i][1] == "0":
             ancestor = table[i][0]
         else:
-            table[i][10] = ancestor
+            table[i][11] = ancestor
+
         # 1.1 For isolating focus keywords
         word_tokens = word_tokenize(table[i][2])
         # 1.2 removing stop words
@@ -59,6 +63,7 @@ def modify(table):
         plurals = [word.pluralize() for word in blob.words]
         # Assigning back to table column
         table[i][-1] = list(set().union(word_tokens,lemantized,lemantized_a,lemantized_v,lemantized_n,singulars,plurals))
+
         # 2.For filling in the parent hts code for empty children
         if(table[i][0]==""):
             table[i][0] = parent
@@ -110,7 +115,10 @@ def parentChildRelation(table):
 
     with open('table1.json', 'w') as fout:
         print(json.dumps(table), file=fout)
-    print(table[1:5])
+    # print(table[1:5])x
+    for row in table:
+        if row[-3] == []:
+            row[-3] = None
     return table
 
 table = loadTable(filepath)
@@ -118,7 +126,6 @@ modifiedTable = modify(table)
 childTable = parentChildRelation(modifiedTable)
 dfToRecords(childTable)
 
-# print(dfToRecords(modifiedTable))
 
 
 sys.stdout.flush()
