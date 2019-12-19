@@ -113,11 +113,12 @@ Standard search would return anything that hits the keyword
 */
 const search = async query => {
   hit = await models.Record.find({ 12: `${query}`},function(err, res){
-    console.log(err);
+    if(err) console.log(err);
+    
   }).setOptions({ lean: true });
   var parent_list = []
   var hit_list = []
-  // console.log(hit);
+  
   for( i = 0; i < hit.length; i++){
     
     hit_list.push(hit[i][9]); // take all the key of the hits
@@ -129,28 +130,20 @@ const search = async query => {
       parent_list.push(hit[i][0]);
     }
   }
-  console.log("Parents")
-  console.log(parent_list)
-  console.log("Hits list")
-  console.log(hit_list);
-  console.log("Hits")
-  console.log(hit);
+
   // console.log(hit[0]);
   parents = await models.Record.find({$and:[
             {0: { $in: parent_list}},
             {1:'0'}]
             }, function(err, res){
-              console.log(err);
+              if(err) console.log(err);
           }).setOptions({ lean: true });
 
   return [parents, hit_list]
 };
 
 
-// const secondarySearch = async query=>{
-//   return await models.
-// };
+
 module.exports.fetch = fetch;
 module.exports.search = search;
 module.exports.runWithoutNightmare = runWithoutNightmare;
-// fetch();
