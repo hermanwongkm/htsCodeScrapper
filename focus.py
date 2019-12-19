@@ -16,10 +16,10 @@ from textblob import TextBlob
 nltk.download("stopwords",quiet=True)
 nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet = True)
-  
 
-# filepath = sys.argv[1] # for use with nodeJS
-filepath= "./database/csv/mined/file.csv" 
+
+filepath = sys.argv[1] # for use with nodeJS
+# filepath= "./database/record/mined/file.csv" 
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
 stop_words.extend(custom_stop_words)
@@ -37,17 +37,23 @@ def loadTable(filepath):
 def modify(table):
     print("[2] Modifying Table ...")
     final_list = []
+    # 1.0 Populate the parent column
+    ancestor = ""
     for i in range(1,len(table)):
-        # 1.For isolating focus keywords
+        if table[i][1] == "0":
+            ancestor = table[i][0]
+        else:
+            table[i][10] = ancestor
+        # 1.1 For isolating focus keywords
         word_tokens = word_tokenize(table[i][2])
-        # 1.1 removing stop words
+        # 1.2 removing stop words
         word_tokens = [w.lower() for w in word_tokens if not w in stop_words]
-        # 1.2 Using word Lematizer on words
+        # 1.3 Using word Lematizer on words
         lemantized = [lemmatizer.lemmatize(w) for w in word_tokens]
         lemantized_a =[lemmatizer.lemmatize(w,'a') for w in word_tokens]
         lemantized_v =[lemmatizer.lemmatize(w,'v') for w in word_tokens]
         lemantized_n =[lemmatizer.lemmatize(w,'n') for w in word_tokens]
-        # 1.3 Using TextBlob library to add Singular and Plural
+        # 1.4 Using TextBlob library to add Singular and Plural
         blob = TextBlob(' '.join(str(i) for i in word_tokens))
         singulars = [word.singularize() for word in blob.words]
         plurals = [word.pluralize() for word in blob.words]

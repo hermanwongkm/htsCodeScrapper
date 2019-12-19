@@ -75,10 +75,40 @@ fetch = async () => {
   return y;
 };
 
+/*
+Standard search would return anything that hits the keyword
+*/
 const search = async query => {
-  return await models.Record.find({ 9: `${query}` }).setOptions({ lean: true });
+  hit = await models.Record.find({ 11: `${query}`},function(err, res){
+    console.log(err);
+  }).setOptions({ lean: true });
+  var parent_list = []
+  var hit_list = []
+  for( i = 0; i < hit.length; i++){
+    hit_list.push(hit[i][0]); // take all the HTS code of the hits
+    if(hit[i][10] != ""){ // If child has a parent
+      // hit_list.push();
+      parent_list.push(hit[i][10]);
+    }
+    if(hit[i][1] == '0'){ // Parents themselves
+      parent_list.push(hit[i][0]);
+    }
+  }
+  console.log(hit[0]);
+  parents = await models.Record.find({$and:[
+            {0: { $in: parent_list}},
+            {1:'0'}]
+            }, function(err, res){
+              console.log(err);
+          }).setOptions({ lean: true });
+
+  return [parents, hit_list]
 };
 
+
+// const secondarySearch = async query=>{
+//   return await models.
+// };
 module.exports.fetch = fetch;
 module.exports.search = search;
 
