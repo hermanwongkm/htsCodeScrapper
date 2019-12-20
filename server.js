@@ -2,7 +2,6 @@
 const Nightmare = require("nightmare");
 require("nightmare-download-manager")(Nightmare);
 const fs = require("fs");
-
 // MongoDB requirements and variables.
 var mongoose = require("mongoose");
 var models = require("./schemas/record.js"); //import records.js
@@ -20,7 +19,7 @@ parseJSON = async () => {
 fetch = async () => {
   mongoose.connection.db.dropDatabase();
   // Spawn is for python script for data preprocessing
-  let nightmare = Nightmare({ show: true });
+  let nightmare = Nightmare({ show: false });
   let spawn = require("child_process").spawn;
 
   console.log("[0] Nightmare is running... \n[0.1] Mining hts.usitc.gov ...");
@@ -109,7 +108,10 @@ runWithoutNightmare = async () => {
 Standard search would return anything that hits the keyword
 */
 const search = async query => {
-  hit = await models.Record.find({ 12: `${query}` }, function(err, res) {
+  hit = await models.Record.find({ 12: { $all: query.split(" ") } }, function(
+    err,
+    res
+  ) {
     if (err) console.log(err);
   }).setOptions({ lean: true });
   var parent_list = [];
