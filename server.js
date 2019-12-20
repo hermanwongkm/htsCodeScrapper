@@ -10,6 +10,7 @@ var models = require("./schemas/record.js"); //import records.js
 /**
  * getUpdated calls for web automation tool to download the latest csv file.
  */
+
 const filepath = "./database/record/mined/file.csv"; // for python
 
 parseJSON = async () => {

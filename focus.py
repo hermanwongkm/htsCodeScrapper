@@ -36,10 +36,11 @@ def loadTable(filepath):
     return table
 
 def modify(table):
-    print("[2] Modifying Table ...")
+    print("[2][Python Child Script] Modifying Table ...")
     final_list = []
     # 1.0 Populate the parent column
     ancestor = ""
+    print("[2.0][Python Child Script] Adding enhancement to keywords, creating required columns.")
     for i in range(1,len(table)):
         # 1.1 For isolating focus keywords
         word_tokens = word_tokenize(table[i][2])
@@ -74,19 +75,9 @@ def modify(table):
 # parents=True will also create any necessary parent directories, 
 # and exist_ok=True won't raise an error if the directory already exists, don't have to explicitly check that separately.
 
-def dfToRecords(table):
-    df = pd.DataFrame(table)
-    output_csv = 'modified.csv'
-    output_json = 'modified.json'
-    output_dir = Path('database/record/modified')
-    output_dir.mkdir(parents=True, exist_ok=True)
-    df.to_csv(output_dir / output_csv)
-    df.to_json(output_dir / output_json, orient='records')
-    return "[2.1] Sucessfully saved the modified CSV and JSON."
-
-
+# Algorithm for parent child relationship
 def parentChildRelation(table):
-    print("Applying changes for parent-child relationship")
+    print("[2.1][Python Child Script] Applying changes for parent-child relationship")
     first_group = False
     row_num = 0
     skip_first = True
@@ -115,19 +106,27 @@ def parentChildRelation(table):
 
     with open('table1.json', 'w') as fout:
         print(json.dumps(table), file=fout)
-    # print(table[1:5])x
     for row in table:
         if row[10] == []:
             row[10] = None
     return table
 
-table = loadTable(filepath)
-modifiedTable = modify(table)
-childTable = parentChildRelation(modifiedTable)
-dfToRecords(childTable)
+def dfToRecords(table):
+    df = pd.DataFrame(table)
+    output_csv = 'modified.csv'
+    output_json = 'modified.json'
+    output_dir = Path('database/record/modified')
+    output_dir.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output_dir / output_csv)
+    df.to_json(output_dir / output_json, orient='records')
+    return "[2.3][Python Child Script] Sucessfully saved the modified CSV and JSON."
+
+def main():
+    table = loadTable(filepath)
+    modifiedTable = modify(table)
+    childTable = parentChildRelation(modifiedTable)
+    dfToRecords(childTable)
+    sys.stdout.flush()
 
 
-
-sys.stdout.flush()
-
-
+main()
