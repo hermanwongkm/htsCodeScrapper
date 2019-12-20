@@ -4,6 +4,7 @@ var cors = require("cors");
 
 search = require("./routes/search.js");
 fetch = require("./routes/fetch.js");
+upload = require("./routes/upload.js");
 
 var app = express();
 
@@ -26,5 +27,7 @@ app.listen(port, () =>
   console.log("The server is currently listening on: " + port)
 );
 app.use(cors());
+
 app.use("/search", search);
 app.use("/fetch", fetch);
+app.use("/upload", upload);
