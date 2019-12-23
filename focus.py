@@ -23,6 +23,7 @@ filepath = sys.argv[1] # for use with nodeJS
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
 stop_words.extend(custom_stop_words)
+stop_words.remove('other')
 
 def loadTable(filepath):
     with open(filepath, newline='') as csvfile:
@@ -119,9 +120,9 @@ def parentChildRelation(table):
 
     # with open('table1.json', 'w') as fout:
     #     print(json.dumps(table), file=fout)
-    # for row in table:
-    #     if row[10] == []:
-    #         row[10] = None
+    for row in table:
+        if row[10] == []:
+            row[10] = None
     return table
 
 def dfToRecords(table):
