@@ -1,10 +1,9 @@
-// Nightmare for data mining automation
+var fs = require("fs");
 var Nightmare = require("nightmare");
 require("nightmare-download-manager")(Nightmare);
-var fs = require("fs");
-// MongoDB requirements and variables.
+
 var mongoose = require("mongoose");
-var models = require("./schemas/record.js"); //import records.js
+var models = require("./schemas/record.js");
 
 /**
  * getUpdated calls for web automation tool to download the latest csv file.
@@ -13,18 +12,19 @@ var models = require("./schemas/record.js"); //import records.js
 const filepath = "./database/record/mined/file.csv"; // for python
 
 parseJSON = async () => {
-  // delete require.cache["./database/record/modified/modified.json"];
   var data = JSON.parse(fs.readFileSync("./database/record/modified/modified.json"));
   return data;
 };
+
 fetch = async () => {
     if(fs.existsSync(filepath)){
-    fs.unlink(filepath, function (err) {
-      if (err) throw err;
-      // if no error, file has been deleted successfully
-      console.log('[Removal of file] File deleted!');
-  }); 
+      fs.unlink(filepath, function (err) {
+        if (err) throw err;
+        // if no error, file has been deleted successfully
+        console.log('[Removal of file] File deleted!');
+    }); 
   };
+
   mongoose.connection.db.dropDatabase();
   // Spawn is for python script for data preprocessing
   let nightmare = Nightmare({ show: false });
@@ -37,7 +37,7 @@ fetch = async () => {
     }
   });
 
-  y = await nightmare
+  res = await nightmare
     .downloadManager()
     .goto("https://hts.usitc.gov/export")
     .wait(1000)
@@ -52,7 +52,7 @@ fetch = async () => {
       // now run python script
       console.log("[1] Successfully mined hts.usitc.gov/export");
       console.log("[1.1] Starting child process, running Python script...");
-      x = await new Promise(function(resolve, reject) {
+      res = await new Promise(function(resolve, reject) {
         var pythonProcess = spawn("python3", ["./focus.py", filepath]);
         pythonProcess.stdout.on("data", async data => {
           console.log(String(data));
@@ -78,13 +78,12 @@ fetch = async () => {
           resolve(true);
         });
       });
-      return x;
+      return res;
     });
-  return y;
+  return res;
 };
 
 runWithoutNightmare = async () => {
-
   mongoose.connection.db.dropDatabase();
   let spawn = require("child_process").spawn;
   res = await new Promise(function(resolve, reject) {
@@ -129,8 +128,6 @@ const search = async query => {
   for (i = 0; i < hit.length; i++) {
     hit_list.push(hit[i][9]); // take all the key of the hits
     if (hit[i][11] != "") {
-      // If child has a parent
-      // hit_list.push();
       parent_list.push(hit[i][11]);
     }
     if (hit[i][1] == "0") {
@@ -138,8 +135,7 @@ const search = async query => {
       parent_list.push(hit[i][0]);
     }
   }
-
-  // console.log(hit[0]);
+  
   parents = await models.Record.find(
     { $and: [{ 0: { $in: parent_list } }, { 1: "0" }] },
     function(err, res) {
