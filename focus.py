@@ -117,11 +117,11 @@ def parentChildRelation(table):
                 ancestors.append(row)
                 row[10] = []
 
-    with open('table1.json', 'w') as fout:
-        print(json.dumps(table), file=fout)
-    for row in table:
-        if row[10] == []:
-            row[10] = None
+    # with open('table1.json', 'w') as fout:
+    #     print(json.dumps(table), file=fout)
+    # for row in table:
+    #     if row[10] == []:
+    #         row[10] = None
     return table
 
 def dfToRecords(table):

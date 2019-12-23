@@ -1,7 +1,7 @@
 // Nightmare for data mining automation
-const Nightmare = require("nightmare");
+var Nightmare = require("nightmare");
 require("nightmare-download-manager")(Nightmare);
-const fs = require("fs");
+var fs = require("fs");
 // MongoDB requirements and variables.
 var mongoose = require("mongoose");
 var models = require("./schemas/record.js"); //import records.js
@@ -13,10 +13,18 @@ var models = require("./schemas/record.js"); //import records.js
 const filepath = "./database/record/mined/file.csv"; // for python
 
 parseJSON = async () => {
-  var data = await require("./database/record/modified/modified.json");
+  // delete require.cache["./database/record/modified/modified.json"];
+  var data = JSON.parse(fs.readFileSync("./database/record/modified/modified.json"));
   return data;
 };
 fetch = async () => {
+    if(fs.existsSync(filepath)){
+    fs.unlink(filepath, function (err) {
+      if (err) throw err;
+      // if no error, file has been deleted successfully
+      console.log('[Removal of file] File deleted!');
+  }); 
+  };
   mongoose.connection.db.dropDatabase();
   // Spawn is for python script for data preprocessing
   let nightmare = Nightmare({ show: false });
@@ -45,7 +53,7 @@ fetch = async () => {
       console.log("[1] Successfully mined hts.usitc.gov/export");
       console.log("[1.1] Starting child process, running Python script...");
       x = await new Promise(function(resolve, reject) {
-        const pythonProcess = spawn("python3", ["./focus.py", filepath]);
+        var pythonProcess = spawn("python3", ["./focus.py", filepath]);
         pythonProcess.stdout.on("data", async data => {
           console.log(String(data));
           converted = await parseJSON();
@@ -76,10 +84,11 @@ fetch = async () => {
 };
 
 runWithoutNightmare = async () => {
+
   mongoose.connection.db.dropDatabase();
   let spawn = require("child_process").spawn;
   res = await new Promise(function(resolve, reject) {
-    const pythonProcess = spawn("python3", ["./focus.py", filepath]);
+    var pythonProcess = spawn("python3", ["./focus.py", filepath]);
     pythonProcess.stdout.on("data", async data => {
       console.log(String(data));
       converted = await parseJSON();
