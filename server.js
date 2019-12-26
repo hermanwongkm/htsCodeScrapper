@@ -159,9 +159,13 @@ const searchByCode = async query => {
   if(queryIndexes.slice(-1)[0]=='00'){
     queryList.push(queryIndexes.slice(0, -1).join('.'));
   }
-  // if query 4112, search 4112.00 as well.
-  if(queryIndexes.length == 1){
-    queryList.push(query.concat(".00"));
+  // add trailing zeros until max out, make search more robust
+  if(queryIndexes.length <4){
+    tails=query;
+    for(i=1;i<=4-(queryIndexes.length);i++){
+      tails = tails+(".00");
+      queryList.push(tails);
+    }
   }
   hit = await models.Record.find({ 0: {$in:queryList} }, function(
     err,
