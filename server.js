@@ -155,11 +155,17 @@ const searchByCode = async query => {
   queryList = []
   queryIndexes = query.split(".");
   queryList.push(query);
-  // this is for matching extra 00s at the end to the right hts code.
-  if(queryIndexes.slice(-1)[0]=='00'){
-    queryList.push(queryIndexes.slice(0, -1).join('.'));
+
+  // Remove trailing zeros
+  if (queryIndexes.length >1 ){
+    for(i=queryIndexes.length-1;i>0;i--){
+      if(queryIndexes.slice(i)[0]=='00'){
+        queryList.push(queryIndexes.slice(0, i).join('.'));
+      }
+    }
   }
-  // add trailing zeros until max out, make search more robust
+  
+  // Add trailing zeros until max out 4 indents
   if(queryIndexes.length <4){
     tails=query;
     for(i=1;i<=4-(queryIndexes.length);i++){
@@ -167,6 +173,7 @@ const searchByCode = async query => {
       queryList.push(tails);
     }
   }
+  console.log(queryList);
   hit = await models.Record.find({ 0: {$in:queryList} }, function(
     err,
     res
