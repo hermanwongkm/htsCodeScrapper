@@ -19,12 +19,12 @@ mongoose.connection.on("error", function(err) {
   if (err) throw err;
 });
 mongoose.set("useCreateIndex", true);
-console.log("[0.0]moongose have been connected");
+console.log("[0.0] Moongose have been connected", serverAdr," Collection:",dbName);
 
 //Express Connection
 const port = 3001;
 app.listen(port, () =>
-  console.log("The server is currently listening on: " + port)
+  console.log("[0.0.1] The upload server is currently listening on: " + port)
 );
 app.use(cors());
 
