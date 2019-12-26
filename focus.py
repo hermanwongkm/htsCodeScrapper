@@ -50,12 +50,13 @@ def modify(table):
         for word in word_tokens:
             word = word.lower()
             new_word_tokens.append(word)
+            # Splitting the words that are separated by hypens as a keyword. cow-hide => cow,hide,cow-hide
             splits = word.split('-')
             if len(splits) >=2:
                 for split in splits:
                     if split.isdigit():
                         chem_flag = True
-            #check if item is chemical 
+            # If the split is likely a chemical, e.g 2-dimetyl... do not add the splits as individual keyword.
             if chem_flag == False:
                 new_word_tokens += splits
             
@@ -81,10 +82,10 @@ def modify(table):
         table[i][9] = i #added unique identifier for ant design
         if table[i][1] == "0":
             ancestor = table[i][0]
-            table[i][12].append(table[i][0].split(".")[0])  # add its own HTS code as keyword.
+            # table[i][12].append(table[i][0].split(".")[0])  # add its own HTS code as keyword. # No longer required as of 26/12/12
         else:
             table[i][11] = ancestor
-            table[i][12].append(table[i][11].split(".")[0]) # add its parent's HTS code as keyword.
+            # table[i][12].append(table[i][11].split(".")[0]) # add its parent's HTS code as keyword. # No longer required as of 26/12/12
     return table
 
 # parents=True will also create any necessary parent directories, 
