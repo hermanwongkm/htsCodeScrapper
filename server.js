@@ -21,7 +21,7 @@ fetch = async () => {
       fs.unlink(filepath, function (err) {
         if (err) throw err;
         // if no error, file has been deleted successfully
-        console.log('[Removal of file] File deleted!');
+        console.log('[Removal of previous hts.usitc file] File deleted!');
     }); 
   };
 
