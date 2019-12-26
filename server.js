@@ -146,6 +146,53 @@ const search = async query => {
   return [parents, hit_list];
 };
 
+
+
+/*
+Search By code
+*/
+const searchByCode = async query => {
+  queryList = []
+  queryIndexes = query.split(".");
+  queryList.push(query);
+  // this is for matching extra 00s at the end to the right hts code.
+  if(queryIndexes.slice(-1)[0]=='00'){
+    queryList.push(queryIndexes.slice(0, -1).join('.'));
+  }
+  // if query 4112, search 4112.00 as well.
+  if(queryIndexes.length == 1){
+    queryList.push(query.concat(".00"));
+  }
+  hit = await models.Record.find({ 0: {$in:queryList} }, function(
+    err,
+    res
+  ) {
+    if (err) console.log(err);
+  }).setOptions({ lean: true });
+  var parent_list = [];
+  var hit_list = [];
+  for (i = 0; i < hit.length; i++) {
+    hit_list.push(hit[i][9]); // take all the key of the hits
+    if (hit[i][11] != "") {
+      parent_list.push(hit[i][11]);
+    }
+    if (hit[i][1] == "0") {
+      // Parents themselves
+      parent_list.push(hit[i][0]);
+    }
+  }
+  
+  parents = await models.Record.find(
+    { $and: [{ 0: { $in: parent_list } }, { 1: "0" }] },
+    function(err, res) {
+      if (err) console.log(err);
+    }
+  ).setOptions({ lean: true });
+
+  return [parents, hit_list];
+};
+
 module.exports.fetch = fetch;
 module.exports.search = search;
+module.exports.searchByCode = searchByCode;
 module.exports.runWithoutNightmare = runWithoutNightmare;

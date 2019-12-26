@@ -50,11 +50,12 @@ def modify(table):
         for word in word_tokens:
             word = word.lower()
             new_word_tokens.append(word)
-            splits =word.split('-')
+            splits = word.split('-')
             if len(splits) >=2:
                 for split in splits:
                     if split.isdigit():
                         chem_flag = True
+            #check if item is chemical 
             if chem_flag == False:
                 new_word_tokens += splits
             
