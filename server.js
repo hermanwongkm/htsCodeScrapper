@@ -128,7 +128,7 @@ const search = async query => {
 
   for (i = 0; i < hit.length; i++) {
     hit_list.push(hit[i][9]); // take all the key of the hits
-    ancestor_list.push(hit[i][9])
+    ancestor_list.push(hit[i][9]);
     ancestor_list = _.union(ancestor_list,hit[i][13]);
     if (hit[i][11] != "") {
       parent_list.push(hit[i][11]);
@@ -191,7 +191,7 @@ const searchByCode = async query => {
 
   for (i = 0; i < hit.length; i++) {
     hit_list.push(hit[i][9]); // take all the key of the hits
-    ancestor_list.push(hit[i][9])
+    ancestor_list.push(hit[i][9]);
     ancestor_list = _.union(ancestor_list,hit[i][13]);
     if (hit[i][11] != "") {
       parent_list.push(hit[i][11]);
@@ -209,7 +209,7 @@ const searchByCode = async query => {
     }
   ).setOptions({ lean: true });
 
-  return [parents, hit_list];
+  return [parents, hit_list,ancestor_list];
 };
 
 module.exports.fetch = fetch;
