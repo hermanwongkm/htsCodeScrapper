@@ -18,8 +18,8 @@ nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet = True)
 
 
-filepath = sys.argv[1] # for use with nodeJS
-# filepath= "./database/record/mined/file.csv" 
+# filepath = sys.argv[1] # for use with nodeJS
+filepath= "./database/record/mined/file.csv" 
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
 stop_words.extend(custom_stop_words)
@@ -40,11 +40,12 @@ def loadTable(filepath):
 
     with open(filepath, newline='') as csvfile:
         table = list(csv.reader(csvfile))
-    table = [x + [""] + [""] + [""] + [""] for x in table] # expand by one column
-    table[0][-1] = "Keywords" #add keyword header 12
-    table[0][-2] = "Parent" #add keyword header 11
-    table[0][-3] = "Children" #add keyword header 10
-    table[0][-4] = "key" #added unique identifier for ant design 9 
+    table = [x + [""] + [""] + [""] + [""] +[""] for x in table] # expand by one column
+    table[0][-1] = "Ancestry" #add ancestry header 13
+    table[0][-2] = "Keywords" #add keyword header 12
+    table[0][-3] = "Parent" #add keyword header 11
+    table[0][-4] = "Children" #add keyword header 10
+    table[0][-5] = "key" #added unique identifier for ant design 9
     # table[0][0] = "HTS Number" #fix corrupted column field
     return table
 
@@ -126,7 +127,7 @@ def parentChildRelation(table):
         if skip_first == True:
             skip_first = False
             continue
-        if skip_first == False:# Make sure row us data
+        if skip_first == False:# Make sure row is data
             indent = int(row[1])
             if indent == 0:
                 ancestors = [row]  #creates a ancestor array
@@ -146,6 +147,27 @@ def parentChildRelation(table):
         if row[10] == []:
             row[10] = None
     return table
+
+def ancestry(table):
+    current_index = len(table)-1 # headings is at index 0
+    for row in reversed(table):# remember get rid of header
+        if current_index == 0:
+            break
+        indent = int(row[1])
+        row[13] = [] # initialise the ancestry column with an empty list
+        for i in range(current_index-1,0,-1):
+            if int(table[i][1]) < indent:
+                if indent == 0:
+                    print("break")
+                    break
+                else:
+                    row[13].append(table[i][9]) # append the key to this
+                    indent = int(table[i][1])
+        current_index -= 1
+    return table
+
+
+
 
 def dfToRecords(table):
 
@@ -184,7 +206,8 @@ def main():
     table = loadTable(filepath)
     modifiedTable = modify(table)
     childTable = parentChildRelation(modifiedTable)
-    dfToRecords(childTable)
+    tester = ancestry(childTable)
+    dfToRecords(tester)
     sys.stdout.flush()
 
 
