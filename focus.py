@@ -4,6 +4,7 @@ import json
 import pprint
 import numpy
 import nltk
+import datetime
 from nltk.corpus import stopwords 
 from nltk.tokenize import word_tokenize
 import pandas as pd
@@ -18,8 +19,8 @@ nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet = True)
 
 
-# filepath = sys.argv[1] # for use with nodeJS
-filepath= "./database/record/mined/file.csv" 
+filepath = sys.argv[1] # for use with nodeJS
+# filepath= "./database/record/mined/file.csv" 
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
 stop_words.extend(custom_stop_words)
@@ -202,13 +203,13 @@ def main():
     3. Insert parent-child relationship into table \n
     4. Saving the outcome into .csv and .json files in database/record/modified directory
     """
-
+    # start = datetime.datetime.now()
     table = loadTable(filepath)
     modifiedTable = modify(table)
     childTable = parentChildRelation(modifiedTable)
     tester = ancestry(childTable)
     dfToRecords(tester)
     sys.stdout.flush()
-
+    # print(datetime.datetime.now() - start)
 
 main()

@@ -1,9 +1,9 @@
 var fs = require("fs");
 var Nightmare = require("nightmare");
 require("nightmare-download-manager")(Nightmare);
-
 var mongoose = require("mongoose");
 var models = require("./schemas/record.js");
+var _ = require("lodash");
 
 /**
  * getUpdated calls for web automation tool to download the latest csv file.
@@ -124,9 +124,12 @@ const search = async query => {
   }).setOptions({ lean: true });
   var parent_list = [];
   var hit_list = [];
+  var ancestor_list = [];
 
   for (i = 0; i < hit.length; i++) {
     hit_list.push(hit[i][9]); // take all the key of the hits
+    ancestor_list.push(hit[i][9])
+    ancestor_list = _.union(ancestor_list,hit[i][13]);
     if (hit[i][11] != "") {
       parent_list.push(hit[i][11]);
     }
@@ -135,6 +138,8 @@ const search = async query => {
       parent_list.push(hit[i][0]);
     }
   }
+
+
   
   parents = await models.Record.find(
     { $and: [{ 0: { $in: parent_list } }, { 1: "0" }] },
@@ -143,7 +148,7 @@ const search = async query => {
     }
   ).setOptions({ lean: true });
 
-  return [parents, hit_list];
+  return [parents, hit_list, ancestor_list];
 };
 
 
@@ -182,8 +187,12 @@ const searchByCode = async query => {
   }).setOptions({ lean: true });
   var parent_list = [];
   var hit_list = [];
+  var ancestor_list = [];
+
   for (i = 0; i < hit.length; i++) {
     hit_list.push(hit[i][9]); // take all the key of the hits
+    ancestor_list.push(hit[i][9])
+    ancestor_list = _.union(ancestor_list,hit[i][13]);
     if (hit[i][11] != "") {
       parent_list.push(hit[i][11]);
     }
