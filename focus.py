@@ -150,6 +150,15 @@ def parentChildRelation(table):
     return table
 
 def ancestry(table):
+    """
+    Function Adds a list of the row's ancestry.\n
+    :param table: Table is a nested array. \n
+    :return: Table in nested array format, with parent child relationship columns added. Col 10. \n
+    :Side Notes: \n
+    :1: The code in this method is based on an a dynamic programming algorithm  \n
+    :2: parent column now contains the whole of parent's row pioritising speed > memory.
+    """
+
     current_index = len(table)-1 # headings is at index 0
     for row in reversed(table):# remember get rid of header
         if current_index == 0:
