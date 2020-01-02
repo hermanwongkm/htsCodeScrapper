@@ -15,6 +15,7 @@ from pathlib import Path
 from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 
+# NLTK Packages. Need to download at least Once
 nltk.download("stopwords", quiet=True)
 nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet=True)
@@ -204,7 +205,7 @@ def dfToRecords(table):
     df = pd.DataFrame(table)
     output_csv = 'modified.csv'
     output_json = 'modified.json'
-    output_dir = Path('database/record/modified')
+    output_dir = Path(config["modified_file_path"])
     # parents = True will also create any necessary parent directories
     output_dir.mkdir(parents=True, exist_ok=True)
     # exist_ok=True won't raise an error if the directory already exists, don't have to explicitly check that separately.
@@ -226,8 +227,8 @@ def main():
     table = loadTable(filepath)
     modifiedTable = modify(table)
     childTable = parentChildRelation(modifiedTable)
-    tester = ancestry(childTable)
-    dfToRecords(tester)
+    ancestors = ancestry(childTable)
+    dfToRecords(ancestors)
     sys.stdout.flush()
     # print(datetime.datetime.now() - start)
 

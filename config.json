@@ -1,5 +1,9 @@
 {
     "mined_file_path": "./database/record/mined/file.csv" ,
+    "modified_file_path":"database/record/modified",
+    "server_adr":"localhost:27017",
+    "db_name" :"hts",
+    "express_port":3001,
     "custom_stop_words":["<" ,
         ">" , 
         "," , 
@@ -13,5 +17,6 @@
         "</i>",
         "<i>"
     ]
+    
 
 }

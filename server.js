@@ -8,8 +8,9 @@ var _ = require("lodash");
 /**
  * getUpdated calls for web automation tool to download the latest csv file.
  */
+let config = JSON.parse(fs.readFileSync('config.json'));
 
-const filepath = "./database/record/mined/file.csv"; // for python
+const filepath = config["mined_file_path"]; // for python
 
 parseJSON = async () => {
   var data = JSON.parse(fs.readFileSync("./database/record/modified/modified.json"));
@@ -37,6 +38,8 @@ fetch = async () => {
     }
   });
 
+
+
   res = await nightmare
     .downloadManager()
     .goto("https://hts.usitc.gov/export")
@@ -46,7 +49,7 @@ fetch = async () => {
     .type(`input[name="to"]`, "9999")
     .click("input#Submit.btn.btn-primary")
     .wait(10000)
-    .waitDownloadsComplete()
+    .waitDownloadsComplete() // Wait timeout
     .end(() => "some value")
     .then(async () => {
       // now run python script

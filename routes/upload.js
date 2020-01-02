@@ -1,14 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var fs = require("fs");
-var filepath = "./database/record/mined/file.csv";
-// if(fs.existsSync(filepath)){
-//   fs.unlink(filepath, function (err) {
-//     if (err) throw err;
-//     // if no error, file has been deleted successfully
-//     console.log('[Removal of file] File deleted!');
-// }); 
-// };
+
 //For uploading file
 var multer = require("multer");
 var storage = multer.diskStorage({
