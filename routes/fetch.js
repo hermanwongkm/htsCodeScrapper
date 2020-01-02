@@ -3,9 +3,9 @@ var { fetch, runWithoutNightmare } = require("../server.js");
 var router = express.Router();
 
 router.get("/getLatest", async function(req, res) {
-  res.setTimeout(400000, function() {
+  res.setTimeout(0, function() {
     console.log("Request has timed out.");
-    res.send(408);
+    res.send(400);
   });
   result = await fetch();
   console.log("Fetching Completed");

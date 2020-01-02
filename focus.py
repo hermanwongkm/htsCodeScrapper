@@ -22,7 +22,6 @@ nltk.download('wordnet', quiet=True)
 with open('config.json') as config_file:
     config = json.load(config_file)
 
-# filepath = sys.argv[1]  # for use with nodeJS
 # filepath = sys.argv[1] # for use with nodeJS
 filepath = config['mined_file_path']
 stop_words = nltk.corpus.stopwords.words('english')
