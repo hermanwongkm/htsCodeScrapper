@@ -1,3 +1,4 @@
+from textblob import TextBlob
 import sys
 import csv
 import json
@@ -5,29 +6,33 @@ import pprint
 import numpy
 import nltk
 import datetime
-from nltk.corpus import stopwords 
+from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import pandas as pd
 from pathlib import Path
+
 # NLTK stemmer
 from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
-from textblob import TextBlob
 
-nltk.download("stopwords",quiet=True)
+nltk.download("stopwords", quiet=True)
 nltk.download('punkt', quiet=True)
-nltk.download('wordnet', quiet = True)
+nltk.download('wordnet', quiet=True)
 
+with open('config.json') as config_file:
+    config = json.load(config_file)
 
-filepath = sys.argv[1] # for use with nodeJS
-# filepath= "./database/record/mined/file.csv" 
+# filepath = sys.argv[1]  # for use with nodeJS
+# filepath = sys.argv[1] # for use with nodeJS
+filepath = config['mined_file_path']
 stop_words = nltk.corpus.stopwords.words('english')
-custom_stop_words = ['<' , '>' , ',' , ':' , '(' , ')' ,'[',']', ';','/i','</i>','<i>', '\'s']
+custom_stop_words = config["custom_stop_words"]
 stop_words.extend(custom_stop_words)
-stop_words.remove('other')
+stop_words.append('\'s')  # Single quotes cannot be stored in config JSON
+stop_words.remove('other')  # other is required, do not remove it from keywords
+
 
 def loadTable(filepath):
-
     """
     Function read from hts.usitc CSV file and add 4 new columns \n
     :param filepath: filepath of where hts.usitc csv.
@@ -37,21 +42,22 @@ def loadTable(filepath):
     :2: Parent column is added at the second last column \n
     :3: Children Column is added at the third last column \n
     :4: Key Column is added at the fourth last column. (Requirement of Ant Design tree table) \n
-    """ 
+    """
 
     with open(filepath, newline='') as csvfile:
         table = list(csv.reader(csvfile))
-    table = [x + [""] + [""] + [""] + [""] +[""] for x in table] # expand by one column
-    table[0][-1] = "Ancestry" #add ancestry header 13
-    table[0][-2] = "Keywords" #add keyword header 12
-    table[0][-3] = "Parent" #add keyword header 11
-    table[0][-4] = "Children" #add keyword header 10
-    table[0][-5] = "key" #added unique identifier for ant design 9
+    table = [x + [""] + [""] + [""] + [""] + [""]
+             for x in table]  # expand by one column
+    table[0][-1] = "Ancestry"  # add ancestry header 13
+    table[0][-2] = "Keywords"  # add keyword header 12
+    table[0][-3] = "Parent"  # add keyword header 11
+    table[0][-4] = "Children"  # add keyword header 10
+    table[0][-5] = "key"  # added unique identifier for ant design 9
     # table[0][0] = "HTS Number" #fix corrupted column field
     return table
 
-def modify(table):
 
+def modify(table):
     """
     Function Populate keyword Columns with description keywords. \n
     :param table: Table is a nested array.
@@ -64,40 +70,48 @@ def modify(table):
     """
 
     print("[2][Python Child Script] Modifying Table ...")
-    final_list = [] # 1.0 Populate the parent column
+    final_list = []  # 1.0 Populate the parent column
     ancestor = ""
     print("[2.0][Python Child Script] Adding enhancement to keywords, creating required columns.")
-    for i in range(1,len(table)):
+    for i in range(1, len(table)):
         chemical_flag = False
-        new_word_tokens = [] # 1.1 For isolating focus keywords
+        new_word_tokens = []  # 1.1 For isolating focus keywords
         word_tokens = word_tokenize(table[i][2])
         for word in word_tokens:
             word = word.lower()
             new_word_tokens.append(word)
-            splits = word.split('-') # Splitting the words that are separated by hypens as a keyword. cow-hide => cow,hide,cow-hide
-            if len(splits) >=2:
+            # Splitting the words that are separated by hypens as a keyword. cow-hide => cow,hide,cow-hide
+            splits = word.split('-')
+            if len(splits) >= 2:
                 for split in splits:
                     if split.isdigit():
                         chemical_flag = True
-            if chemical_flag == False: # If the split is likely a chemical, e.g 2-dimetyl... do not add the splits as individual keyword.
+            # If the split is likely a chemical, e.g 2-dimetyl... do not add the splits as individual keyword.
+            if chemical_flag == False:
                 new_word_tokens += splits
-        word_tokens = [w.lower() for w in new_word_tokens if not w in stop_words] # 1.2 removing stop words
-        lemantized = [lemmatizer.lemmatize(w) for w in word_tokens] # 1.3 Using word Lematizer on words
-        lemantized_a =[lemmatizer.lemmatize(w,'a') for w in word_tokens]
-        lemantized_v =[lemmatizer.lemmatize(w,'v') for w in word_tokens]
-        lemantized_n =[lemmatizer.lemmatize(w,'n') for w in word_tokens]
-        blob = TextBlob(' '.join(str(i) for i in word_tokens)) # 1.4 Using TextBlob library to add Singular and Plural
+        # 1.2 removing stop words
+        word_tokens = [w.lower()
+                       for w in new_word_tokens if not w in stop_words]
+        # 1.3 Using word Lematizer on words
+        lemantized = [lemmatizer.lemmatize(w) for w in word_tokens]
+        lemantized_a = [lemmatizer.lemmatize(w, 'a') for w in word_tokens]
+        lemantized_v = [lemmatizer.lemmatize(w, 'v') for w in word_tokens]
+        lemantized_n = [lemmatizer.lemmatize(w, 'n') for w in word_tokens]
+        # 1.4 Using TextBlob library to add Singular and Plural
+        blob = TextBlob(' '.join(str(i) for i in word_tokens))
         singulars = [word.singularize() for word in blob.words]
         plurals = [word.pluralize() for word in blob.words]
         # Assigning back to table column as a list set, removing possible repeats.
-        table[i][12] = list(set().union(word_tokens,lemantized,lemantized_a,lemantized_v,lemantized_n,singulars,plurals))
+        table[i][12] = list(set().union(word_tokens, lemantized,
+                                        lemantized_a, lemantized_v, lemantized_n, singulars, plurals))
 
         # 2. For filling in the parent hts code for empty children
-        if(table[i][0]==""):
+        if(table[i][0] == ""):
             table[i][0] = parent
-        else: parent = table[i][0]
+        else:
+            parent = table[i][0]
         # 3. Inserting a key column
-        table[i][9] = i # added unique identifier for ant design
+        table[i][9] = i  # added unique identifier for ant design
         if table[i][1] == "0":
             ancestor = table[i][0]
             # table[i][12].append(table[i][0].split(".")[0])  # add its own HTS code as keyword. #! No longer required as of 26/12/12
@@ -109,7 +123,6 @@ def modify(table):
 
 # Algorithm for parent child relationship
 def parentChildRelation(table):
-
     """
     Function Adds parent-child relationship based on "indent" column. \n
     :param table: Table is a nested array. \n
@@ -128,11 +141,11 @@ def parentChildRelation(table):
         if skip_first == True:
             skip_first = False
             continue
-        if skip_first == False:# Make sure row is data
+        if skip_first == False:  # Make sure row is data
             indent = int(row[1])
             if indent == 0:
-                ancestors = [row]  #creates a ancestor array
-                row[10] = [] #initialised my child column
+                ancestors = [row]  # creates a ancestor array
+                row[10] = []  # initialised my child column
             else:
                 parent_indent = indent - 1
                 while parent_indent >= 0:
@@ -141,13 +154,15 @@ def parentChildRelation(table):
                         break
                     except IndexError:
                         parent_indent -= 1  # search one more level up
-                ancestors = ancestors[:indent]  # remove the previous ancestor at the same indent
+                # remove the previous ancestor at the same indent
+                ancestors = ancestors[:indent]
                 ancestors.append(row)
                 row[10] = []
-    for row in table: # Replace empty arrays with None.
+    for row in table:  # Replace empty arrays with None.
         if row[10] == []:
             row[10] = None
     return table
+
 
 def ancestry(table):
     """
@@ -159,28 +174,25 @@ def ancestry(table):
     :2: parent column now contains the whole of parent's row pioritising speed > memory.
     """
 
-    current_index = len(table)-1 # headings is at index 0
-    for row in reversed(table):# remember get rid of header
+    current_index = len(table)-1  # headings is at index 0
+    for row in reversed(table):  # remember get rid of header
         if current_index == 0:
             break
         indent = int(row[1])
-        row[13] = [] # initialise the ancestry column with an empty list
-        for i in range(current_index-1,0,-1):
+        row[13] = []  # initialise the ancestry column with an empty list
+        for i in range(current_index-1, 0, -1):
             if int(table[i][1]) < indent:
                 if indent == 0:
                     print("break")
                     break
                 else:
-                    row[13].append(table[i][9]) # append the key to this
+                    row[13].append(table[i][9])  # append the key to this
                     indent = int(table[i][1])
         current_index -= 1
     return table
 
 
-
-
 def dfToRecords(table):
-
     """
     Function saves the table input to both csv and json format.\n
     :param table: Table is a nested array.
@@ -194,16 +206,15 @@ def dfToRecords(table):
     output_csv = 'modified.csv'
     output_json = 'modified.json'
     output_dir = Path('database/record/modified')
-    output_dir.mkdir(parents=True, exist_ok=True) # parents = True will also create any necessary parent directories
-    df.to_csv(output_dir / output_csv) # exist_ok=True won't raise an error if the directory already exists, don't have to explicitly check that separately.
+    # parents = True will also create any necessary parent directories
+    output_dir.mkdir(parents=True, exist_ok=True)
+    # exist_ok=True won't raise an error if the directory already exists, don't have to explicitly check that separately.
+    df.to_csv(output_dir / output_csv)
     df.to_json(output_dir / output_json, orient='records')
     return "[2.3][Python Child Script] Sucessfully saved the modified CSV and JSON."
 
 
-
-
 def main():
-
     """
     Main function of python scripts \n
     Runs the following in sequence \n
@@ -220,5 +231,6 @@ def main():
     dfToRecords(tester)
     sys.stdout.flush()
     # print(datetime.datetime.now() - start)
+
 
 main()

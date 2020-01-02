@@ -1,0 +1,17 @@
+{
+    "mined_file_path": "./database/record/mined/file.csv" ,
+    "custom_stop_words":["<" ,
+        ">" , 
+        "," , 
+        ":" , 
+        "(" , 
+        ")" ,
+        "[",
+        "]", 
+        ";",
+        "/i",
+        "</i>",
+        "<i>"
+    ]
+
+}
