@@ -1,9 +1,4 @@
 {
-    "mined_file_path": "./database/record/mined/file.csv" ,
-    "modified_file_path":"database/record/modified",
-    "server_adr":"localhost:27017",
-    "db_name" :"hts",
-    "express_port":3001,
     "number_retries":3,
     "gotoTimeout": 120000,
     "waitTimeout":120000,
@@ -21,6 +16,4 @@
         "</i>",
         "<i>"
     ]
-    
-
 }
