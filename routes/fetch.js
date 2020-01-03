@@ -7,7 +7,7 @@ router.get("/getLatest", async function(req, res) {
     console.log("Request has timed out.");
     res.send(400);
   });
-  result = await fetch();
+  result = await fetch(3);
   console.log("Fetching Completed");
   console.log(result);
   res.send(result);
