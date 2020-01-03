@@ -10,6 +10,10 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import pandas as pd
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path = env_path)
 
 # NLTK stemmer
 from nltk.stem import WordNetLemmatizer
@@ -24,7 +28,7 @@ with open('config.json') as config_file:
     config = json.load(config_file)
 
 # filepath = sys.argv[1] # for use with nodeJS
-filepath = config['mined_file_path']
+filepath = os.getenv("mined_file_path");
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = config["custom_stop_words"]
 stop_words.extend(custom_stop_words)
@@ -205,7 +209,7 @@ def dfToRecords(table):
     df = pd.DataFrame(table)
     output_csv = 'modified.csv'
     output_json = 'modified.json'
-    output_dir = Path(config["modified_file_path"])
+    output_dir = Path(os.getenv("modified_file_path"))
     # parents = True will also create any necessary parent directories
     output_dir.mkdir(parents=True, exist_ok=True)
     # exist_ok=True won't raise an error if the directory already exists, don't have to explicitly check that separately.

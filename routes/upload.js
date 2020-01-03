@@ -1,11 +1,12 @@
 var express = require("express");
 var router = express.Router();
+require("dotenv").config();
 
 //For uploading file
 var multer = require("multer");
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, "./database/record/mined");
+    cb(null, process.env.mined_file_directory);
   },
   filename: function(req, file, cb) {
     cb(null, "file.csv");

@@ -4,13 +4,15 @@ require("nightmare-download-manager")(Nightmare);
 var mongoose = require("mongoose");
 var models = require("./schemas/record.js");
 var _ = require("lodash");
+require("dotenv").config();
 
 /**
  * getUpdated calls for web automation tool to download the latest csv file.
  */
 let config = JSON.parse(fs.readFileSync('config.json'));
 
-const filepath = config["mined_file_path"]; // for python
+const filepath = process.env.mined_file_path; // for python
+console.log("filepath"+filepath);
 
 parseJSON = async () => {
   var data = JSON.parse(fs.readFileSync("./database/record/modified/modified.json"));
@@ -22,7 +24,6 @@ fetch = async (MAXTRIES) => {
 
   if (MAXTRIES===0){
     console.log("Maximum Retries reached");
-    res = false;
     return false;
   };
   
@@ -35,9 +36,9 @@ fetch = async (MAXTRIES) => {
 };
 
 mongoose.connection.db.dropDatabase();
-// Spawn is for python script for data preprocessing
-let nightmare = Nightmare({ show: false,gotoTimeout:2*60*1000,waitTimeout:2*60*1000,downloadTimeout:10000 });
-let spawn = require("child_process").spawn;
+// Nightmare default characteristics for timeout, this depends on the amount of data as well as hardware.
+let nightmare = Nightmare({ show: false,gotoTimeout:config["gotoTimeout"],waitTimeout:config["waitTimeout"],downloadTimeout:["downloadTimeout"] });
+let spawn = require("child_process").spawn;// Spawn is for python script for data preprocessing
 
 console.log("[0] Nightmare is running... \n[0.1] Mining hts.usitc.gov ...");
 nightmare.on("download", function(state, downloadItem) {
@@ -46,9 +47,8 @@ nightmare.on("download", function(state, downloadItem) {
   }
 });
 
-triesRemaining = MAXTRIES;
     try{
-      console.log("Nightmare tries left: "+triesRemaining);
+      console.log("Nightmare tries left: " + MAXTRIES);
       await nightmare
   .downloadManager()
   .goto("https://hts.usitc.gov/export")
@@ -95,7 +95,7 @@ triesRemaining = MAXTRIES;
     return true;
 
     }catch(e){
-      console.log(e);
+      console.log(e.name + ':' + e.message);
       console.log("Error encountered... retrying");
       await this.fetch(MAXTRIES -1);
     }
