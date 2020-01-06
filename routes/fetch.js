@@ -1,8 +1,9 @@
-var express = require("express");
-var { fetch, runWithoutNightmare } = require("../server.js");
-var router = express.Router();
 var fs = require("fs");
-let config = JSON.parse(fs.readFileSync('config.json'));
+var express = require("express");
+
+var router = express.Router();
+var { fetch, runWithoutNightmare } = require("../server.js");
+let config = JSON.parse(fs.readFileSync("config.json"));
 
 router.get("/getLatest", async function(req, res) {
   res.setTimeout(0, function() {
