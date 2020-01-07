@@ -1,6 +1,8 @@
 var cors = require("cors");
+const http = require("http");
 var mongoose = require("mongoose");
 const express = require("express");
+const socketIO = require("socket.io");
 
 require("dotenv").config();
 fetch = require("./routes/fetch.js");
@@ -8,6 +10,7 @@ upload = require("./routes/upload.js");
 search = require("./routes/search.js");
 
 var app = express();
+const server = http.createServer(app);
 
 //Moongoose Connection
 mongoose.Promise = global.Promise;
@@ -30,14 +33,28 @@ console.log(
   db_name
 );
 
-//Express Connection
+var io = socketIO(server);
 
-app.listen(express_port, () =>
+server.listen(express_port, () =>
   console.log(
     "[0.0.1] The upload server is currently listening on: " + express_port
   )
 );
+
+io.on("connection", socket => {
+  console.log("User connected");
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
+
 app.use(cors());
+
+app.use(function(req, res, next) {
+  req.io = io;
+  next();
+});
 
 app.use("/search", search);
 app.use("/fetch", fetch);

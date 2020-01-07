@@ -6,14 +6,12 @@ var { fetch, runWithoutNightmare } = require("../server.js");
 let config = JSON.parse(fs.readFileSync("config.json"));
 
 router.get("/getLatest", async function(req, res) {
-  res.setTimeout(0, function() {
-    console.log("Request has timed out.");
-    res.send(400);
-  });
+  const io = req.io;
+  res.send(true);
   result = await fetch(config["number_retries"]);
   console.log("Fetching Completed");
   console.log(result);
-  res.send(result);
+  io.sockets.emit("processed", result);
 });
 
 router.get("/getLocal", async function(req, res) {
