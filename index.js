@@ -11,6 +11,8 @@ search = require("./routes/search.js");
 
 var app = express();
 const server = http.createServer(app);
+var io = socketIO(server); //Connect express with socket.io
+app.set("socketio", io); //Use the express instance to store and retrieve variables
 
 //Moongoose Connection
 mongoose.Promise = global.Promise;
@@ -33,8 +35,6 @@ console.log(
   db_name
 );
 
-var io = socketIO(server);
-
 server.listen(express_port, () =>
   console.log(
     "[0.0.1] The upload server is currently listening on: " + express_port
@@ -49,13 +49,8 @@ io.on("connection", socket => {
   });
 });
 
+//Middlewares()
 app.use(cors());
-
-app.use(function(req, res, next) {
-  req.io = io;
-  next();
-});
-
 app.use("/search", search);
 app.use("/fetch", fetch);
 app.use("/upload", upload);

@@ -22,7 +22,7 @@ parseJSON = async () => {
   return data;
 };
 
-fetch = async MAXTRIES => {
+fetch = async (MAXTRIES, io) => {
   if (MAXTRIES === 0) {
     console.log("Maximum Retries reached");
     return false;
@@ -37,6 +37,7 @@ fetch = async MAXTRIES => {
   }
 
   mongoose.connection.db.dropDatabase();
+  io.sockets.emit("status", { status: "Database dropped" });
   // Nightmare default characteristics for timeout, this depends on the amount of data as well as hardware.
   let nightmare = Nightmare({
     show: false,
@@ -45,7 +46,7 @@ fetch = async MAXTRIES => {
     downloadTimeout: ["downloadTimeout"]
   });
   let spawn = require("child_process").spawn; // Spawn is for python script for data preprocessing
-
+  io.sockets.emit("status", { status: "Running webscrapper" });
   console.log("[0] Nightmare is running... \n[0.1] Mining hts.usitc.gov ...");
   nightmare.on("download", function(state, downloadItem) {
     if (state == "started") {
@@ -67,6 +68,9 @@ fetch = async MAXTRIES => {
       .waitDownloadsComplete() // Wait timeout
       .end(() => "some value")
       .then(async () => {
+        io.sockets.emit("status", {
+          status: "Mining completed. Running Python script"
+        });
         // now run python script
         console.log("[1] Successfully mined hts.usitc.gov/export");
         console.log("[1.1] Starting child process, running Python script...");
@@ -105,7 +109,7 @@ fetch = async MAXTRIES => {
   } catch (e) {
     console.log(e.name + ":" + e.message);
     console.log("Error encountered... retrying");
-    res = await this.fetch(MAXTRIES - 1);
+    res = await this.fetch(MAXTRIES - 1, io);
     return res;
   }
 };
@@ -137,6 +141,11 @@ runWithoutNightmare = async () => {
     });
   });
   return res;
+};
+
+const getLastUpdatedTimestamp = async () => {
+  timestamp = await models.Record.findOne();
+  return timestamp._id.getTimestamp();
 };
 
 /*
@@ -234,5 +243,6 @@ const searchByCode = async query => {
 
 module.exports.fetch = fetch;
 module.exports.search = search;
+module.exports.getLastUpdatedTimestamp = getLastUpdatedTimestamp;
 module.exports.searchByCode = searchByCode;
 module.exports.runWithoutNightmare = runWithoutNightmare;
