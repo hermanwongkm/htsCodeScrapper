@@ -1,3 +1,4 @@
+from nltk.stem import WordNetLemmatizer
 from textblob import TextBlob
 import sys
 import csv
@@ -13,10 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 env_path = Path('.') / '.env'
-load_dotenv(dotenv_path = env_path)
+load_dotenv(dotenv_path=env_path)
 
 # NLTK stemmer
-from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 
 # NLTK Packages. Need to download at least Once
@@ -28,7 +28,7 @@ with open('config.json') as config_file:
     config = json.load(config_file)
 
 # filepath = sys.argv[1] # for use with nodeJS
-filepath = os.getenv("mined_file_path");
+filepath = os.getenv("mined_file_path")
 stop_words = nltk.corpus.stopwords.words('english')
 custom_stop_words = config["custom_stop_words"]
 stop_words.extend(custom_stop_words)
@@ -185,13 +185,11 @@ def ancestry(table):
         indent = int(row[1])
         row[13] = []  # initialise the ancestry column with an empty list
         for i in range(current_index-1, 0, -1):
+            if indent == 0:
+                break
             if int(table[i][1]) < indent:
-                if indent == 0:
-                    print("break")
-                    break
-                else:
-                    row[13].append(table[i][9])  # append the key to this
-                    indent = int(table[i][1])
+                row[13].append(table[i][9])  # append the key to this
+                indent = int(table[i][1])
         current_index -= 1
     return table
 
