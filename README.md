@@ -1,7 +1,7 @@
 # A Better Search Tool for Harmonized Tariff Schedule (Backend - Repo)
 
 ### Aim 
-Improve HTS code search to retrieve its associated descriptions and details.
+Improve HTS search function in both keyword support and HTS code to retrieve its associated descriptions and details with keywords/code.
 
 ### Goals
 1. Make HTS Code backend API, to search for item description given keywords, or hts code.
