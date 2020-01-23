@@ -71,8 +71,8 @@ Improve HTS code search to retrieve its associated descriptions and details.
 ## Screenshots 
 
 <p align="center">
-    <img src="screenshotgif/search.gif" alt="Image" width="300px" height="150px" />
-    <img src="screenshotgif/updates.gif" alt="Image" width="300px" height="150px" />
+    <img src="screenshotgif/search.gif" alt="Image" width = "45%" height = "100%" align = "center" />
+    <img src="screenshotgif/updates.gif" alt="Image" width = "45%" height = "100%" align = "center"/>
 </p>
 <p align="center">
 Demo - search(left) , updates(right)
