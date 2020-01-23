@@ -29,7 +29,7 @@ Improve HTS code search to retrieve its associated descriptions and details.
 6. Frontend
 > + Search box to search for item keywords
 >> + Search via keywords
->> + Search via Hts code (Using Regex)
+>> + Search via Hts code (Using Regex to hit /searchc endpoint)
 > + Display the details on react frontend with a Ant design nested table  
 
 ### API Endpoints
