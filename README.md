@@ -14,7 +14,7 @@ Improve HTS code search to retrieve its associated descriptions and details.
 > + React
 > + NodeJS
 2. Data retrieval
-> + Use NightmareJS (headless browsing automation) to retrieve HTS_Code details  
+> + Use NightmareJS (headless browsing automation) to retrieve latest HTS_Code csv file  
 3. Data enhancement using Python libraries
 > + Converting lengthly description into keywords for search
 > + Removal of stopwords from keywords
