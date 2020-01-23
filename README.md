@@ -1,4 +1,4 @@
-# Better Query for Harmonized Tariff Schedule (Backend - Repo)
+# A Better Search Tool for Harmonized Tariff Schedule (Backend - Repo)
 
 ### Aim 
 Improve HTS code search to retrieve its associated descriptions and details.
