@@ -66,8 +66,7 @@ Improve HTS code search to retrieve its associated descriptions and details.
 * [NLTK](https://www.nltk.org/) - NLTK is a leading platform for building Python programs to work with human language data.
 * [Pandas](https://pandas.pydata.org/) - pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language. 
 ### ReactJS
-* [Ant Design Table](https://ant.design/components/table/#components-table-demo-nested-table) - Providing parent child relationships in the table.
-
+* [Ant Design](https://ant.design/components/table/#components-table-demo-nested-table) - A design system with values of Nature and Determinacy for better user experience of enterprise applications.
 ## Screenshots 
 
 <p align="center">
