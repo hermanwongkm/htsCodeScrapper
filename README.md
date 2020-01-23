@@ -67,7 +67,7 @@ Improve HTS code search to retrieve its associated descriptions and details.
 * [Pandas](https://pandas.pydata.org/) - pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language. 
 ### ReactJS
 * [Ant Design](https://ant.design/components/table/#components-table-demo-nested-table) - A design system with values of Nature and Determinacy for better user experience of enterprise applications.
-## Screencaptures
+## Screen Captures
 
 <p align="center">
     <img src="screenshotgif/search.gif" alt="Image" width = "45%" height = "100%" align = "center" />
