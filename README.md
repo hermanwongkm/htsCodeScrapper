@@ -4,7 +4,7 @@
 Improve HTS search function in both keyword support and HTS code to retrieve its associated descriptions and details with keywords/code.
 
 ### Goals
-1. Make HTS Code backend API, to search for item description given keywords, or hts code.
+1. Make HTS Query backend API, to search for item description given keywords, or hts code.
 2. Create a better user experience by improving upon the display of the data via its parent-child relationship.  
 3. Allow API calls to update the backend with latest HTS tariffs updates manually (Upload) or automatically (Web Automation,scrapping)  
 ### Strategy  
