@@ -31,8 +31,8 @@ Improve HTS code search to retrieve its associated descriptions and details.
 >> + Search via keywords
 >> + Search via Hts code (Using Regex to hit /searchc endpoint)
 > + Display the details on react frontend with a Ant design nested table  
-> + Update to get the latest HTS Tariff Schedule
-> + Local upload HTS Tariff Schedule incase of server maintenance
+> + Update button to get the latest HTS Tariff Schedule from hts.usitc.gov
+> + Local upload button to manually upload HTS Tariff Schedule incase of server maintenance
 
 ### API Endpoints
 1. Search
