@@ -48,7 +48,7 @@ Improve HTS search function in both keyword and HTS code support  to retrieve it
 > * Socket.io used to capture the completion of child process via event-based communication. 
 > * Returns modified.csv with the following changes
 >> 1. Added Keyword column - Description column split, removal of stop words, add plurals/singulars and lemmatization.
->> 2. Added parentChildRelation to *child* column - Child will have its parent's row here, this is for improving time complexity on data retrieval at the expense of space complexity. Done using Dyanamic Programming Algorithm
+>> 2. Added parentChildRelation to *child* column - Child will have its parent's row here, this is for improving time complexity on data retrieval at the expense of space complexity. Done using Dynamic Programming Algorithm
 >> 3. Added Parent Column - Contains the source parent of an item, source parents have indent of zero
 >> 4. Added Ancestry Column - Contains a list of all it's parents' key that has lower indent than itself  
 >> 5. Added key Column - Contains a unique identifier for each row, this is same as row index, for ant design table 
