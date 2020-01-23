@@ -68,7 +68,7 @@ def modify(table):
     :return: Table in nested array format, with keyword columns added. Col 9. \n
     :Side Notes: \n
     :1: NLTK library used to remove stopwords and add lemanization  \n
-    :2: WordBlob library used to add singular and plurals. \n
+    :2: textBlob library used to add singular and plurals. \n
     :3: Some child rows do not have HTS_codes, added its direct parent as its own HTS_code. \n
     :4: Split up hypened words to add individual as searchable keywords. (Chemical names are ignored here) \n
     """
@@ -133,7 +133,7 @@ def parentChildRelation(table):
     :return: Table in nested array format, with parent child relationship columns added. Col 10. \n
     :Side Notes: \n
     :1: The code in this method is based on an a dynamic programming algorithm  \n
-    :2: parent column now contains the whole of parent's row pioritising speed > memory.
+    :2: child column now contains the whole of item's child's row pioritising speed > memory.
     """
 
     print("[2.1][Python Child Script] Applying changes for parent-child relationship")
@@ -172,10 +172,10 @@ def ancestry(table):
     """
     Function Adds a list of the row's ancestry.\n
     :param table: Table is a nested array. \n
-    :return: Table in nested array format, with parent child relationship columns added. Col 10. \n
+    :return: Table in nested array format, with ancestry columns added. Col 13. \n
     :Side Notes: \n
     :1: The code in this method is based on an a dynamic programming algorithm  \n
-    :2: parent column now contains the whole of parent's row pioritising speed > memory.
+    :2: Column contains a list of its parent's key that has indent lower than itself  
     """
 
     current_index = len(table)-1  # headings is at index 0
