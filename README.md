@@ -61,7 +61,7 @@ Improve HTS code search to retrieve its associated descriptions and details.
 * [lodash](https://lodash.com/) - A modern JavaScript utility library delivering modularity, performance & extras.
 * [socket.io](https://www.npmjs.com/package/socket.io) - Socket.IO enables real-time bidirectional event-based communication.
 * [Babel7](https://babeljs.io/) - Babel is a toolchain that is mainly used to convert ECMAScript 2015+ code into a backwards compatible version of JavaScript in current and older browsers or environments.
-### Python
+### Python3
 * [Textblob](https://textblob.readthedocs.io/en/dev/) - TextBlob is a Python (2 and 3) library for processing textual data.
 * [NLTK](https://www.nltk.org/) - NLTK is a leading platform for building Python programs to work with human language data.
 * [Pandas](https://pandas.pydata.org/) - pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language. 
