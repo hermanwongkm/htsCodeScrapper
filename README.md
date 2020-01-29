@@ -72,13 +72,21 @@ Improve HTS search function in both keyword and HTS code support  to retrieve it
 ## Screen Captures
 
 <p align="center">
-    <img src="screenshotgif/search.gif" alt="Image" width = "45%" height = "100%" align = "center" />
-    <img src="screenshotgif/updates.gif" alt="Image" width = "45%" height = "100%" align = "center"/>
+    <img src="screenshotgif/search.gif" alt="Image" width = "46%" height = "100%" align = "center" />
+    <img src="screenshotgif/updates.gif" alt="Image" width = "46%" height = "100%" align = "center"/>
 </p>
 <p align="center">
 Demo - search(left) , updates(right)
 </p>
 
+## Flow diagrams  
+<p align="center">
+    <img src="screenshotgif/searchflow.png" alt="Image" width = "45%" height = "100%" align = "center" />
+    <img src="screenshotgif/updateflow.png" alt="Image" width = "45%" height = "100%" align = "center"/>
+</p>
+<p align="center">
+Demo - search(left) , updates(right)
+</p>
  
 ## Documented by
 * Zenger Soong Cun Yuan
